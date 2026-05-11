@@ -1,7 +1,7 @@
 {
   "name": "option-skill-creator",
   "description": "Author, evaluate, and iterate on new options-focused agent skills with structured guidance and quality scoring.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "dongzhuoyao"
   },

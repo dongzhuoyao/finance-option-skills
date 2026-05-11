@@ -21,6 +21,7 @@ npx plugins add dongzhuoyao/finance-option-skills --plugin option-strategies
 npx plugins add dongzhuoyao/finance-option-skills --plugin option-volatility
 npx plugins add dongzhuoyao/finance-option-skills --plugin option-data-providers
 npx plugins add dongzhuoyao/finance-option-skills --plugin option-risk-management
+npx plugins add dongzhuoyao/finance-option-skills --plugin option-crypto
 npx plugins add dongzhuoyao/finance-option-skills --plugin option-skill-creator
 ```
 
@@ -86,6 +87,18 @@ Hedging, sizing, and portfolio-level Greeks for options books.
 | [delta-hedging](plugins/option-risk-management/skills/delta-hedging/) | Build a delta-hedging schedule — rebalance bands, gamma scalping P&L attribution |
 | [position-sizing](plugins/option-risk-management/skills/position-sizing/) | Kelly-fraction and max-loss-based sizing for premium sellers (cash-secured puts, credit spreads) |
 | [portfolio-greeks](plugins/option-risk-management/skills/portfolio-greeks/) | Aggregate Greeks across a multi-position book and flag concentration risks |
+
+### Crypto Options (`option-crypto`)
+
+Deribit-focused skills for BTC / ETH inverse options — coin-settled pricing math, DVOL regime, GEX / max-pain positioning.
+
+| Skill | Description |
+|---|---|
+| [deribit-data](plugins/option-crypto/skills/deribit-data/) | Public REST API reader — instruments, ticker, book summary, index price, funding rate, DVOL history |
+| [deribit-options-chain](plugins/option-crypto/skills/deribit-options-chain/) | Pull BTC/ETH options chains, USD conversion from coin-quoted prices, liquidity filters, ATM strip |
+| [inverse-options-pricing](plugins/option-crypto/skills/inverse-options-pricing/) | Coin-settled Black-Scholes — premium and Greeks in BTC/ETH, plus conversion to USD-equivalent for hedging |
+| [dvol-index](plugins/option-crypto/skills/dvol-index/) | Deribit DVOL (crypto VIX) — regime classification, 1y percentile, IV-RV spread |
+| [gex-max-pain](plugins/option-crypto/skills/gex-max-pain/) | Dealer Gamma Exposure and Max Pain strike at any Deribit expiry — positioning, not forecast |
 
 ### Option Skill Creator (`option-skill-creator`)
 

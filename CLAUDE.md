@@ -37,6 +37,9 @@ plugins/
   option-risk-management/ # Delta hedging, sizing, portfolio Greeks
     plugin.json
     skills/...
+  option-crypto/          # Deribit BTC/ETH inverse options, DVOL, GEX, max pain
+    plugin.json
+    skills/...
   option-skill-creator/   # Skill authoring for the options domain
     plugin.json
     skills/...
@@ -79,7 +82,7 @@ Markdown documents in `references/` containing detailed API references, code tem
 
 ## Creating a new skill
 
-1. Choose the appropriate plugin group (`option-pricing`, `option-strategies`, `option-volatility`, `option-data-providers`, or `option-risk-management`)
+1. Choose the appropriate plugin group (`option-pricing`, `option-strategies`, `option-volatility`, `option-data-providers`, `option-risk-management`, or `option-crypto`)
 2. Create `plugins/<group>/skills/<skill-name>/` directory
 3. Write `SKILL.md` with YAML frontmatter (`name`, `description`) and step-by-step instructions
 4. Add reference files under `references/` for detailed API docs, code templates, or formulas that would bloat the main instructions
@@ -119,7 +122,7 @@ Guidelines:
 
 ## Plugin system
 
-This repo ships as a Claude Code plugin marketplace containing 6 plugins:
+This repo ships as a Claude Code plugin marketplace containing 7 plugins:
 
 | Plugin | Description |
 |---|---|
@@ -128,6 +131,7 @@ This repo ships as a Claude Code plugin marketplace containing 6 plugins:
 | `option-volatility` | IV surface, skew, term structure |
 | `option-data-providers` | yfinance, CBOE, broker chain readers |
 | `option-risk-management` | Delta hedging, sizing, portfolio Greeks |
+| `option-crypto` | Deribit BTC/ETH inverse options, DVOL, GEX, max pain |
 | `option-skill-creator` | Authoring/evaluating new skills |
 
 - `.claude-plugin/marketplace.json` — marketplace listing with all 6 plugin entries.

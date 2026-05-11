@@ -1,7 +1,7 @@
 {
   "name": "option-risk-management",
   "description": "Options risk management — delta hedging schedules, position sizing for premium sellers, portfolio Greeks aggregation.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "dongzhuoyao"
   },

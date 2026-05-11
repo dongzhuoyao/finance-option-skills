@@ -1,7 +1,7 @@
 {
   "name": "option-pricing",
   "description": "Options pricing models — Black-Scholes, binomial trees, Greeks calculations for European and American options.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "dongzhuoyao"
   },

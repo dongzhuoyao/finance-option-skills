@@ -4,45 +4,51 @@
     "name": "dongzhuoyao"
   },
   "metadata": {
-    "description": "Agent skills focused on options trading and derivatives — Black-Scholes pricing, Greeks, multi-leg strategy payoffs, implied volatility surfaces, options chain reading, and risk management.",
-    "version": "0.1.0"
+    "description": "Agent skills focused on options trading and derivatives (equity + crypto) — Black-Scholes pricing, Greeks, multi-leg strategy payoffs, implied volatility surfaces, options chain reading, risk management, and Deribit BTC/ETH inverse options.",
+    "version": "0.2.0"
   },
   "plugins": [
     {
       "name": "option-pricing",
       "source": "./plugins/option-pricing",
       "description": "Options pricing models — Black-Scholes, binomial trees, Greeks calculations for European and American options.",
-      "version": "0.1.0"
+      "version": "0.2.0"
     },
     {
       "name": "option-strategies",
       "source": "./plugins/option-strategies",
       "description": "Multi-leg options strategies — interactive payoff curves, strategy selection by market view, P&L analysis.",
-      "version": "0.1.0"
+      "version": "0.2.0"
     },
     {
       "name": "option-volatility",
       "source": "./plugins/option-volatility",
       "description": "Implied volatility analysis — surface fitting, term structure, skew, smile, vol forecasting.",
-      "version": "0.1.0"
+      "version": "0.2.0"
     },
     {
       "name": "option-data-providers",
       "source": "./plugins/option-data-providers",
       "description": "Options market data sources — yfinance options chains, CBOE indices (VIX/SKEW/PUT/CALL), broker chain readers.",
-      "version": "0.1.0"
+      "version": "0.2.0"
     },
     {
       "name": "option-risk-management",
       "source": "./plugins/option-risk-management",
       "description": "Options risk management — delta hedging schedules, position sizing for premium sellers, portfolio Greeks aggregation.",
-      "version": "0.1.0"
+      "version": "0.2.0"
+    },
+    {
+      "name": "option-crypto",
+      "source": "./plugins/option-crypto",
+      "description": "Crypto options skills focused on Deribit — public API reader, BTC/ETH options chains, inverse-settled options pricing, DVOL volatility index, and GEX / max-pain analysis.",
+      "version": "0.2.0"
     },
     {
       "name": "option-skill-creator",
       "source": "./plugins/option-skill-creator",
       "description": "Author, evaluate, and iterate on new options-focused agent skills with structured guidance and quality scoring.",
-      "version": "0.1.0"
+      "version": "0.2.0"
     }
   ]
 }

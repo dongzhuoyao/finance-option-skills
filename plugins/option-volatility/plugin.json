@@ -1,7 +1,7 @@
 {
   "name": "option-volatility",
   "description": "Implied volatility analysis — surface fitting, term structure, skew, smile, vol forecasting.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "dongzhuoyao"
   },
