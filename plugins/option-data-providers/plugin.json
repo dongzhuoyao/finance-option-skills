@@ -1,0 +1,22 @@
+{
+  "name": "option-data-providers",
+  "description": "Options market data sources — yfinance options chains, CBOE indices (VIX/SKEW/PUT/CALL), broker chain readers.",
+  "version": "0.1.0",
+  "author": {
+    "name": "dongzhuoyao"
+  },
+  "homepage": "https://github.com/dongzhuoyao/finance-option-skills",
+  "repository": "https://github.com/dongzhuoyao/finance-option-skills",
+  "license": "MIT",
+  "keywords": [
+    "options",
+    "data",
+    "yfinance",
+    "cboe",
+    "vix",
+    "options-chain",
+    "ibkr",
+    "tastytrade",
+    "thinkorswim"
+  ]
+}

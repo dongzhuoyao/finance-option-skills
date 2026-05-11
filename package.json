@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "finance-option-skills",
+  "version": "0.1.0",
+  "description": "Agent skills focused on options trading and derivatives.",
+  "license": "MIT",
+  "scripts": {
+    "bump": "ccbump"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "devDependencies": {
+    "ccbump": "^0.2.1"
+  }
+}
