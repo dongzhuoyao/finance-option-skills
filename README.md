@@ -1,19 +1,263 @@
-# Finance Option Skills
+<div align="center">
+
+# 🎯 finance-option-skills
+
+### **The AI options desk in your terminal.**
+
+#### Black-Scholes to Bitcoin. Twenty skills. One install.
+
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/dongzhuoyao/finance-option-skills/releases)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Plugins](https://img.shields.io/badge/plugins-7-purple.svg)](#-whats-inside)
+[![Skills](https://img.shields.io/badge/skills-20-orange.svg)](#-skill-catalog)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-ready-d97757.svg)](https://claude.com/claude-code)
+[![Deribit](https://img.shields.io/badge/Deribit-integrated-00a8e8.svg)](https://www.deribit.com)
+
+**Stop building options spreadsheets. Start asking Claude.**
+
+</div>
 
 > [!WARNING]
-> This project is for educational and informational purposes only. Nothing here constitutes financial advice. Options trading involves substantial risk of loss and is not suitable for all investors. Always do your own research and consult a qualified financial advisor before making investment decisions.
+> Educational only. Options trading involves substantial risk of loss. **Not financial advice.** Always DYOR.
 
-A collection of agent skills focused on **options trading and derivatives**, following the [Agent Skills](https://agentskills.io) open standard. Inspired by and structured after [himself65/finance-skills](https://github.com/himself65/finance-skills), but specialized for options: pricing, Greeks, multi-leg strategies, implied volatility, and risk management.
+---
 
-## Quick Start
-
-### Claude Code — All Plugins
+## ⚡ 60-Second Install
 
 ```bash
 npx plugins add dongzhuoyao/finance-option-skills
 ```
 
-### Claude Code — Individual Plugins
+That's it. Restart Claude Code, then talk to it like an options trader:
+
+```
+You: "Price me an iron condor on SPX, 5700/5800/5900/6000, 30 DTE at 18% IV."
+You: "Show the payoff curve."
+You: "What's max pain for BTC this Friday?"
+You: "Fit the IV surface for QQQ and find the cheapest contracts."
+You: "Compute the net Greeks across my book — 4 positions, mixed tickers."
+```
+
+Claude reaches for the right skill automatically. **No spreadsheets. No notebooks. No copy-paste.**
+
+---
+
+## 🧠 Why this exists
+
+LLMs are great at talking about options. They're awful at **doing** options work — until you give them the right tools.
+
+This repo packages **20 production-grade skills** into one Claude Code marketplace covering everything from textbook Black-Scholes to inverse-settled Deribit BTC options. Each skill is:
+
+- ✅ **Single-purpose** — one job, done right
+- ✅ **No silent fallbacks** — if data is stale, you hear about it
+- ✅ **Math-precise** — formulas, units, edge cases all spelled out
+- ✅ **Hand-off aware** — skills chain together (chain → IV → payoff → Greeks → sizing)
+
+Adapted from [himself65/finance-skills](https://github.com/himself65/finance-skills) (MIT), narrowed and deepened for **options/derivatives only** — and extended with full Deribit crypto coverage.
+
+---
+
+## 🏗️ What's Inside
+
+### Seven plugin groups, twenty skills
+
+<table>
+<tr>
+<td width="33%">
+
+**🧮 Pricing**
+- Black-Scholes-Merton
+- Greeks (1st & 2nd order)
+- Binomial trees (American)
+
+</td>
+<td width="33%">
+
+**📐 Strategies**
+- Interactive payoff curves
+- 13 strategy templates
+- Strategy selector by view
+
+</td>
+<td width="33%">
+
+**🌊 Volatility**
+- SVI / SABR surfaces
+- Skew (25d RR, butterfly)
+- Term structure
+
+</td>
+</tr>
+<tr>
+<td>
+
+**📡 Data**
+- yfinance chains
+- Broker screenshots
+- CBOE VIX / SKEW
+
+</td>
+<td>
+
+**🛡️ Risk**
+- Delta hedging schedules
+- Kelly sizing
+- Portfolio Greeks
+
+</td>
+<td>
+
+**₿ Crypto (Deribit)**
+- BTC / ETH chains
+- Inverse-options math
+- DVOL + GEX + max pain
+
+</td>
+</tr>
+<tr>
+<td colspan="3" align="center">
+
+**🛠️ Skill Creator** — Author and grade new options skills with a 14-point quality rubric
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🎬 See It In Action
+
+### Vanilla equity option
+
+> **You:** *"What does a call debit spread on TSLA 350/360 look like, 30 days out, 45% IV?"*
+
+Claude → invokes `options-payoff` → renders an interactive HTML widget with:
+- Expiry payoff curve + theoretical curve
+- Sliders for every parameter
+- Live max profit / max loss / breakeven cards
+- Greeks overlay on demand
+
+### Crypto positioning
+
+> **You:** *"Where's the gamma wall for ETH next Friday on Deribit?"*
+
+Claude → `deribit-options-chain` → `gex-max-pain` → reports:
+- Max-pain strike + holder-payoff curve
+- Top 3 gamma walls by absolute exposure
+- Spot's position relative to the walls
+- Caveat about dealer-positioning assumptions
+
+### Vol regime check
+
+> **You:** *"Is BTC vol cheap right now?"*
+
+Claude → `dvol-index` → returns:
+- Current DVOL + 1y percentile
+- IV-RV spread (vol carry context)
+- Regime classification (calm/normal/elevated/stressed/crisis)
+- Term-structure shape from the chain
+
+---
+
+## 📚 Skill Catalog
+
+<details open>
+<summary><b>🧮 Option Pricing</b> — closed-form and numerical pricing under BSM (3 skills)</summary>
+
+| Skill | Description |
+|---|---|
+| [black-scholes](plugins/option-pricing/skills/black-scholes/) | European call/put pricing with dividend yield, put-call parity verification |
+| [greeks-calculator](plugins/option-pricing/skills/greeks-calculator/) | First and second-order Greeks: Δ Γ Θ ν ρ + vanna, volga, charm, color |
+| [binomial-pricing](plugins/option-pricing/skills/binomial-pricing/) | Cox-Ross-Rubinstein for American options and early-exercise premium |
+
+</details>
+
+<details open>
+<summary><b>📐 Option Strategies</b> — payoff visualization and strategy selection (2 skills)</summary>
+
+| Skill | Description |
+|---|---|
+| [options-payoff](plugins/option-strategies/skills/options-payoff/) | Interactive payoff curves — verticals, butterflies, condors, calendars, straddles, ratios, jade lizards, broken wings |
+| [strategy-selector](plugins/option-strategies/skills/strategy-selector/) | Map (direction × vol view × risk tolerance) to the right multi-leg structure |
+
+</details>
+
+<details open>
+<summary><b>🌊 Option Volatility</b> — surface, skew, term structure (3 skills)</summary>
+
+| Skill | Description |
+|---|---|
+| [iv-surface](plugins/option-volatility/skills/iv-surface/) | Fit SVI / SABR per expiry, run calendar + butterfly arbitrage tests, surface dislocations |
+| [vol-skew](plugins/option-volatility/skills/vol-skew/) | 25-delta risk reversal & butterfly with 1y historical percentile context |
+| [vol-term-structure](plugins/option-volatility/skills/vol-term-structure/) | ATM IV across expiries — contango/backwardation, earnings vol bumps |
+
+</details>
+
+<details open>
+<summary><b>📡 Option Data Providers</b> — yfinance, CBOE, broker readers (3 skills)</summary>
+
+| Skill | Description |
+|---|---|
+| [yfinance-options](plugins/option-data-providers/skills/yfinance-options/) | Pull chains, Greeks, historicals; resolves "0DTE / weeklies / monthlies" to real dates |
+| [options-chain-reader](plugins/option-data-providers/skills/options-chain-reader/) | Parse IBKR / TastyTrade / ToS / Robinhood / Schwab screenshots into structured legs |
+| [cboe-data](plugins/option-data-providers/skills/cboe-data/) | VIX / VVIX / SKEW / VIX9D / VIX3M with regime classification |
+
+</details>
+
+<details open>
+<summary><b>🛡️ Option Risk Management</b> — hedge, size, aggregate (3 skills)</summary>
+
+| Skill | Description |
+|---|---|
+| [delta-hedging](plugins/option-risk-management/skills/delta-hedging/) | Rebalance bands, gamma scalp P&L, realized-vol breakeven, TC drag |
+| [position-sizing](plugins/option-risk-management/skills/position-sizing/) | Fixed-max-loss + quarter Kelly + BP cap; refuses to size unbounded-loss legs |
+| [portfolio-greeks](plugins/option-risk-management/skills/portfolio-greeks/) | Per-underlying + book-level dollar Greeks; concentration flags; 5 stress tests |
+
+</details>
+
+<details open>
+<summary><b>₿ Crypto Options (Deribit)</b> — the part that's different (5 skills)</summary>
+
+| Skill | Description |
+|---|---|
+| [deribit-data](plugins/option-crypto/skills/deribit-data/) | Public REST wrapper — instruments, ticker, book, index, funding, DVOL history |
+| [deribit-options-chain](plugins/option-crypto/skills/deribit-options-chain/) | One-call BTC / ETH chains, coin→USD conversion, ATM strip |
+| [inverse-options-pricing](plugins/option-crypto/skills/inverse-options-pricing/) | Coin-settled BSM math + Greek conversions for the part that breaks textbooks |
+| [dvol-index](plugins/option-crypto/skills/dvol-index/) | Deribit's "crypto VIX" — regime, percentile, IV-RV spread |
+| [gex-max-pain](plugins/option-crypto/skills/gex-max-pain/) | Dealer gamma exposure + max-pain strike (with explicit positioning caveats) |
+
+</details>
+
+<details>
+<summary><b>🛠️ Skill Creator</b> — extend the marketplace (1 skill)</summary>
+
+| Skill | Description |
+|---|---|
+| [skill-creator](plugins/option-skill-creator/skills/skill-creator/) | Scaffold + score new options skills against a 14-point quality rubric |
+
+</details>
+
+---
+
+## 🔥 Why crypto support actually matters
+
+Most "options skills" repos pretend equity Black-Scholes works on Deribit. **It doesn't.**
+
+Deribit BTC/ETH options are **inverse-settled**: premium and payoff are denominated in the coin, not USD. This means:
+
+- **Deltas are different.** A Deribit ATM call has delta ~0.35, not 0.50.
+- **Mark prices look weird.** A "0.04 BTC" premium is ~$4,000 at BTC=$100k.
+- **Greeks need conversion** before hedging — or you'll be off by a factor of S.
+
+The `inverse-options-pricing` skill ships the full conversion math (View 1: USD numeraire ÷ S; View 2: coin-numeraire BSM). Greeks come in **both coin and USD-equivalent** with explicit labels. Put-call parity is checked in inverse form: `C − P = 1 − K/S` (not `S − Ke^(-rT)`).
+
+That's the kind of detail you don't get from "AI helps you trade options" listicles.
+
+---
+
+## 🧰 Install Individual Plugins
+
+Don't want all seven? Install à la carte:
 
 ```bash
 npx plugins add dongzhuoyao/finance-option-skills --plugin option-pricing
@@ -25,91 +269,110 @@ npx plugins add dongzhuoyao/finance-option-skills --plugin option-crypto
 npx plugins add dongzhuoyao/finance-option-skills --plugin option-skill-creator
 ```
 
-### Claude Code — Individual Skills
+Or just one skill:
 
 ```bash
-npx skills add dongzhuoyao/finance-option-skills
+npx skills add dongzhuoyao/finance-option-skills --skill options-payoff
+npx skills add dongzhuoyao/finance-option-skills --skill iv-surface
+npx skills add dongzhuoyao/finance-option-skills --skill deribit-options-chain
 ```
 
-### Other Agents
+Other agents (Codex, Gemini CLI, GitHub Copilot, etc.):
 
 ```bash
 npx skills add dongzhuoyao/finance-option-skills -a <agent-name>
 ```
 
-## Available Skills
+---
 
-### Option Pricing (`option-pricing`)
+## 🧩 How skills chain together
 
-Closed-form and numerical pricing for European and American options, plus the full Greek family.
+The skills are designed to compose. A typical "real" question pulls 3-5 of them automatically:
 
-| Skill | Description |
+```
+"Find me a cheap BTC call to express my bullish view"
+            │
+            ▼
+   ┌──────────────────┐
+   │  dvol-index      │ ─→ "DVOL at 28th pct, vol is cheap"
+   └──────────────────┘
+            │
+            ▼
+   ┌──────────────────┐
+   │  deribit-data    │ ─→ "BTC = $98,400"
+   └──────────────────┘
+            │
+            ▼
+   ┌──────────────────────────┐
+   │  deribit-options-chain   │ ─→ filtered chain, ATM strip
+   └──────────────────────────┘
+            │
+            ▼
+   ┌──────────────────────────┐
+   │  inverse-options-pricing │ ─→ residual vs Deribit mark
+   └──────────────────────────┘
+            │
+            ▼
+   ┌──────────────────┐
+   │  strategy-selector│ ─→ "long call vs call debit spread vs short put"
+   └──────────────────┘
+            │
+            ▼
+   ┌──────────────────┐
+   │  options-payoff   │ ─→ interactive widget
+   └──────────────────┘
+            │
+            ▼
+   ┌──────────────────┐
+   │  position-sizing  │ ─→ "buy 3 contracts, $X at risk"
+   └──────────────────┘
+```
+
+You ask one question. Claude orchestrates the chain.
+
+---
+
+## 🎓 Design principles
+
+Every skill follows these rules — call out violations as bugs:
+
+| Rule | What it means |
 |---|---|
-| [black-scholes](plugins/option-pricing/skills/black-scholes/) | Black-Scholes-Merton pricing for European calls/puts — with dividend yield, put-call parity sanity checks |
-| [greeks-calculator](plugins/option-pricing/skills/greeks-calculator/) | First and second-order Greeks — delta, gamma, theta, vega, rho, vanna, volga, charm |
-| [binomial-pricing](plugins/option-pricing/skills/binomial-pricing/) | Cox-Ross-Rubinstein binomial tree for American options and early-exercise premium estimation |
+| **No silent fallbacks** | When data is stale or an API fails, you hear about it. No "I'll just use a default" surprises. |
+| **Units always labeled** | Vega per vol point. Theta per calendar day. Coin delta vs USD delta. No ambiguity. |
+| **Edge cases enumerated** | T ≤ 0 → intrinsic + warning. σ ≤ 0 → undefined + warning. Not silently coerced. |
+| **Math, not vibes** | Every payoff comes with the formula. Every Greek has a derivation in `references/`. |
+| **Refuses unbounded-loss sizing** | `position-sizing` won't size a naked call. You get a different structure or no structure. |
 
-### Option Strategies (`option-strategies`)
+---
 
-Multi-leg payoff analysis and strategy selection by market view.
+## 🤝 Contributing
 
-| Skill | Description |
-|---|---|
-| [options-payoff](plugins/option-strategies/skills/options-payoff/) | Interactive payoff curve widget — verticals, butterflies, condors, calendars, straddles, ratios |
-| [strategy-selector](plugins/option-strategies/skills/strategy-selector/) | Match user's directional/vol view + risk tolerance to the right multi-leg structure |
+Have an options skill that's missing? PR it.
 
-### Option Volatility (`option-volatility`)
+1. Pick a plugin group (or propose a new one)
+2. Use `skill-creator` to scaffold
+3. Score against the 14-point rubric (must hit ≥ 10)
+4. Open a PR
 
-Implied volatility analysis across strike and time dimensions.
+For the engineering bar, see [CLAUDE.md](CLAUDE.md).
 
-| Skill | Description |
-|---|---|
-| [iv-surface](plugins/option-volatility/skills/iv-surface/) | Fit and visualize the full IV surface — SVI/SABR parameterizations, no-arbitrage checks |
-| [vol-skew](plugins/option-volatility/skills/vol-skew/) | Strike-axis skew — 25-delta risk reversal, butterfly, put/call skew interpretation |
-| [vol-term-structure](plugins/option-volatility/skills/vol-term-structure/) | Time-axis term structure — contango vs backwardation, earnings vol crush forecasting |
+---
 
-### Option Data Providers (`option-data-providers`)
+## 📜 Credit & License
 
-External data sources for options chains and volatility indices.
+Structure, plugin marketplace design, and parts of the `options-payoff` SKILL.md are adapted from [himself65/finance-skills](https://github.com/himself65/finance-skills) (MIT). This repo focuses exclusively on **options & derivatives**, and adds the full crypto / Deribit layer.
 
-| Skill | Description |
-|---|---|
-| [yfinance-options](plugins/option-data-providers/skills/yfinance-options/) | Pull options chains, Greeks, and historicals via yfinance — full snapshot or single expiry |
-| [options-chain-reader](plugins/option-data-providers/skills/options-chain-reader/) | Parse broker option chain screenshots (IBKR / TastyTrade / ToS / Robinhood) into structured legs |
-| [cboe-data](plugins/option-data-providers/skills/cboe-data/) | Read CBOE volatility indices — VIX, VVIX, SKEW, put/call ratio, VIX9D/VIX3M for term structure |
+[**MIT License**](LICENSE) — use it, fork it, ship it.
 
-### Option Risk Management (`option-risk-management`)
+---
 
-Hedging, sizing, and portfolio-level Greeks for options books.
+<div align="center">
 
-| Skill | Description |
-|---|---|
-| [delta-hedging](plugins/option-risk-management/skills/delta-hedging/) | Build a delta-hedging schedule — rebalance bands, gamma scalping P&L attribution |
-| [position-sizing](plugins/option-risk-management/skills/position-sizing/) | Kelly-fraction and max-loss-based sizing for premium sellers (cash-secured puts, credit spreads) |
-| [portfolio-greeks](plugins/option-risk-management/skills/portfolio-greeks/) | Aggregate Greeks across a multi-position book and flag concentration risks |
+### **Built for the trader who'd rather ship than spreadsheet.**
 
-### Crypto Options (`option-crypto`)
+⭐ **Star this repo** if it saves you one afternoon of pricing math. ⭐
 
-Deribit-focused skills for BTC / ETH inverse options — coin-settled pricing math, DVOL regime, GEX / max-pain positioning.
+[Report a bug](https://github.com/dongzhuoyao/finance-option-skills/issues) · [Request a skill](https://github.com/dongzhuoyao/finance-option-skills/issues/new) · [See it on Claude Code](https://claude.com/claude-code)
 
-| Skill | Description |
-|---|---|
-| [deribit-data](plugins/option-crypto/skills/deribit-data/) | Public REST API reader — instruments, ticker, book summary, index price, funding rate, DVOL history |
-| [deribit-options-chain](plugins/option-crypto/skills/deribit-options-chain/) | Pull BTC/ETH options chains, USD conversion from coin-quoted prices, liquidity filters, ATM strip |
-| [inverse-options-pricing](plugins/option-crypto/skills/inverse-options-pricing/) | Coin-settled Black-Scholes — premium and Greeks in BTC/ETH, plus conversion to USD-equivalent for hedging |
-| [dvol-index](plugins/option-crypto/skills/dvol-index/) | Deribit DVOL (crypto VIX) — regime classification, 1y percentile, IV-RV spread |
-| [gex-max-pain](plugins/option-crypto/skills/gex-max-pain/) | Dealer Gamma Exposure and Max Pain strike at any Deribit expiry — positioning, not forecast |
-
-### Option Skill Creator (`option-skill-creator`)
-
-| Skill | Description |
-|---|---|
-| [skill-creator](plugins/option-skill-creator/skills/skill-creator/) | Create, evaluate, and iterate on new options-focused skills with a quality rubric |
-
-## Credit
-
-Repository layout, plugin marketplace design, and many SKILL.md conventions are adapted from [himself65/finance-skills](https://github.com/himself65/finance-skills) (MIT). This repo narrows that template to focus on options/derivatives.
-
-## License
-
-MIT
+</div>
