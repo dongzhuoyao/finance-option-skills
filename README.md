@@ -277,11 +277,65 @@ npx skills add dongzhuoyao/finance-option-skills --skill iv-surface
 npx skills add dongzhuoyao/finance-option-skills --skill deribit-options-chain
 ```
 
-Other agents (Codex, Gemini CLI, GitHub Copilot, etc.):
+Other Claude Code agents (Codex, Gemini CLI, GitHub Copilot, etc.):
 
 ```bash
 npx skills add dongzhuoyao/finance-option-skills -a <agent-name>
 ```
+
+---
+
+## 🤖 Install on Hermes Agent
+
+[Hermes](https://github.com/anpicasso/hermes) ships its own skill registry — it can't read Claude Code's `marketplace.json` directly. Use Hermes's URL-based installer with a shell loop:
+
+```bash
+# 1. Clone the repo (so you have the references/ folders locally)
+git clone https://github.com/dongzhuoyao/finance-option-skills.git
+cd finance-option-skills
+
+# 2. Bulk install all 20 SKILL.md files into the 'options' category.
+#    --force is needed because some skills embed !`command` blocks for live
+#    data injection — Hermes's security scanner flags those but they're safe.
+for sd in plugins/*/skills/*/; do
+  url="https://raw.githubusercontent.com/dongzhuoyao/finance-option-skills/main/${sd}SKILL.md"
+  hermes skills install "$url" --category options --force --yes
+done
+
+# 3. Overlay references/ folders (URL install only fetches SKILL.md).
+for sd in plugins/*/skills/*/; do
+  skill=$(basename "$sd")
+  [ -d "${sd}references" ] && cp -R "${sd}references" "$HOME/.hermes/skills/options/$skill/"
+done
+
+# 4. Restart Hermes so active sessions pick up the new skills.
+hermes gateway restart
+```
+
+**Verify** the install:
+
+```bash
+hermes skills list | grep options       # expect 20 rows
+ls ~/.hermes/skills/options/             # 20 directories, references/ present in 8
+```
+
+**Test it**:
+
+```bash
+hermes chat
+> Pull the BTC options chain from Deribit and show me the ATM strip
+```
+
+Should fire `deribit-options-chain`.
+
+**Uninstall**:
+
+```bash
+rm -rf ~/.hermes/skills/options/
+hermes skills audit       # de-registers the removed skills from Hermes's manifest
+```
+
+> **Why not `hermes plugins install`?** It clones the repo to `~/.hermes/plugins/` but warns "doesn't contain plugin.yaml" and doesn't auto-discover SKILL.md files inside `plugins/<group>/skills/<name>/`. Hermes's plugin format expects a flat `skills/<name>/SKILL.md` layout; this repo uses the Claude Code marketplace layout instead. The skills-install loop above is the working path.
 
 ---
 
