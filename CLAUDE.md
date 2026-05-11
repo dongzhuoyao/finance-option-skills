@@ -6,6 +6,41 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A collection of agent skills focused on **options trading and derivatives**, following the [Agent Skills](https://agentskills.io) open standard. Skills are installable into Claude Code, Claude.ai, and other supported agents (Codex, Gemini CLI, GitHub Copilot, etc.). Structure adapted from [himself65/finance-skills](https://github.com/himself65/finance-skills).
 
+This is a **documentation/reference repository** — no build step, no runtime code, no tests. Each "skill" is a markdown file (`SKILL.md`) with structured frontmatter that the agent reads at runtime. Treat new contributions as documentation edits, not code.
+
+## Common commands
+
+There is no compile/test loop. The full set:
+
+```bash
+pnpm bump                   # bump versions across marketplace.json + all plugin.jsons (uses ccbump)
+git tag v0.X.Y && git push --tags   # triggers release-skills.yml → zips each skill, publishes a GitHub release
+```
+
+**Validate SKILL.md frontmatter locally before commit** (the GitHub Actions linter is strict on these):
+
+```bash
+python3 - <<'EOF'
+import re, yaml
+from pathlib import Path
+for path in Path('plugins').rglob('SKILL.md'):
+    text = path.read_text()
+    m = re.match(r'^---\n(.*?)\n---\n', text, re.DOTALL)
+    assert m, f'{path}: no frontmatter'
+    front = m.group(1)
+    yaml.safe_load(front)                        # must parse as YAML
+    assert len(front) <= 1024, f'{path}: frontmatter > 1024 chars'
+    # angle-bracket check (linter rejects literal < or > in description content;
+    # `>` as YAML folded-string indicator on its own line is OK)
+    for i, line in enumerate(front.splitlines(), 1):
+        stripped = re.sub(r':\s*[>|][-+]?\s*$', ':', line)
+        assert '<' not in stripped and '>' not in stripped, f'{path}:{i+1}: angle bracket: {line}'
+print('OK')
+EOF
+```
+
+The CI linter (`himself65/skill-lint@v2`) enforces: frontmatter present, `description` ≤ 1024 chars, no literal `<`/`>` in description content.
+
 ## Repository structure
 
 This repo is two things at once:
@@ -16,7 +51,7 @@ Skills are organized into plugin groups by usage area within the options domain.
 
 ```
 .claude-plugin/
-  marketplace.json        # Marketplace definition — lists all 6 plugins
+  marketplace.json        # Marketplace definition — lists all 7 plugins
 plugins/
   option-pricing/         # Black-Scholes, binomial, Greeks
     plugin.json
@@ -80,6 +115,20 @@ The `description` field is critical — it controls when the skill activates. Wr
 
 Markdown documents in `references/` containing detailed API references, code templates, formulas, or schema docs. The SKILL.md instructions tell the model to read specific reference files when needed, keeping the main instructions concise.
 
+### Skill composition (architectural big picture)
+
+Skills in this repo are designed to **chain**. The final step of most SKILL.md files names downstream skills the agent should hand off to. A typical chain has the shape: **data → analysis → action**. Two real chains shipped here:
+
+- **Equity options trade**: `yfinance-options` → `iv-surface` / `vol-skew` → `strategy-selector` → `options-payoff` → `position-sizing`
+- **Crypto options trade**: `dvol-index` → `deribit-data` → `deribit-options-chain` → `inverse-options-pricing` → `options-payoff` → `position-sizing`
+
+When adding or editing a skill, **explicitly name the upstream skill that feeds it and the downstream skill that consumes its output** in the final "Respond to User" step. This is what makes the agent pick the right next skill without the user re-prompting.
+
+Two specific composition rules baked into the existing skills:
+
+1. **Greeks must be labeled with their numeraire and scaling.** `greeks-calculator` returns per-vol-point vega and per-calendar-day theta; `inverse-options-pricing` returns both coin-denominated and USD-equivalent. Skills that consume Greeks (e.g., `delta-hedging`, `portfolio-greeks`) assume those conventions — don't break them.
+2. **Equity skills assume vanilla Black-Scholes; crypto skills assume inverse settlement.** `options-payoff` is reusable for both, but it's the caller's responsibility to convert coin premiums to USD before passing them in (`deribit-options-chain` does this via the `usd_mid` column).
+
 ## Creating a new skill
 
 1. Choose the appropriate plugin group (`option-pricing`, `option-strategies`, `option-volatility`, `option-data-providers`, `option-risk-management`, or `option-crypto`)
@@ -88,7 +137,9 @@ Markdown documents in `references/` containing detailed API references, code tem
 4. Add reference files under `references/` for detailed API docs, code templates, or formulas that would bloat the main instructions
 5. Add a `README.md` for the skill's GitHub page (description, triggers, platform, setup, reference file list)
 6. Update the root `README.md` to list the new skill in the appropriate plugin group table
-7. The skill will be auto-zipped and released on tag push via GitHub Actions
+7. Run the local SKILL.md validation snippet (see "Common commands") before commit
+8. Bump versions across `marketplace.json` and every `plugin.json` (`pnpm bump`)
+9. The skill will be auto-zipped and released on tag push via GitHub Actions
 
 ### Platform considerations
 
@@ -134,12 +185,18 @@ This repo ships as a Claude Code plugin marketplace containing 7 plugins:
 | `option-crypto` | Deribit BTC/ETH inverse options, DVOL, GEX, max pain |
 | `option-skill-creator` | Authoring/evaluating new skills |
 
-- `.claude-plugin/marketplace.json` — marketplace listing with all 6 plugin entries.
+- `.claude-plugin/marketplace.json` — marketplace listing with all 7 plugin entries.
 - `plugins/<group>/plugin.json` — per-plugin manifest (name, version, keywords). Skills under `plugins/<group>/skills/` with SKILL.md frontmatter are auto-discovered by the plugin loader.
 
 Users install all plugins via `npx plugins add dongzhuoyao/finance-option-skills`. Individual plugins can be installed via `npx plugins add dongzhuoyao/finance-option-skills --plugin <plugin-name>`. Individual skills via `npx skills add dongzhuoyao/finance-option-skills --skill <name>`.
 
 When a skill is invoked as a plugin, it is namespaced as `<plugin-name>:<skill-name>` (e.g., `/option-strategies:options-payoff`).
+
+### Installing on non-Claude-Code agents
+
+The `npx plugins add` / `npx skills add` commands above only work for agents that read the Claude Code marketplace format. Hermes ships its own registry and requires a different install flow — see the **"Install on Hermes Agent"** section in `README.md` (URL-loop install + manual `references/` overlay; `hermes plugins install` does NOT work because the repo lacks `plugin.yaml`).
+
+For new agents not yet documented, the lowest-common-denominator path is: clone the repo, then have the agent read SKILL.md files directly from `plugins/<group>/skills/<name>/`.
 
 ## CI/CD
 
